@@ -122,3 +122,7 @@ comp : (a, b, c : Type) ->
 comp = %runElab (do 
                 repeatUntilFail intro'
                 exact (RApp (Var `{{g}}) (RApp (Var `{{f}}) (Var `{{arg}}))))
+
+data N : Type where
+  Z' : N
+  S' : N -> N
