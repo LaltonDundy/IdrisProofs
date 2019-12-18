@@ -74,7 +74,7 @@ inj2 = %runElab
           )
 
 -- Isomorphism  <~~>
--- ||| This will hopefully be easier to use/prove than traditional equality for some inportant cases
+-- ||| This will hopefully be easier to use/prove than traditional equality for some important cases
 iso : (a, b : Type)  ->  
       (f : (a -> b)) ->  -- Function Left to Right
       (g : (b -> a)) ->  -- Function Right to Left
