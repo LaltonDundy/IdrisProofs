@@ -113,3 +113,12 @@ dist a b c = MkDPair f' . -- proof of f
                 g' arg = case arg of
                             Left  (fs, sn) => (fs, Left  sn) 
                             Right (fs, sn) => (fs, Right sn) 
+
+-- Composition
+comp : (a, b, c : Type) ->
+       (f : (a -> b))   -> 
+       (g : (b -> c))   ->
+       (arg : a) -> c
+comp = %runElab (do 
+                repeatUntilFail intro'
+                exact (RApp (Var `{{g}}) (RApp (Var `{{f}}) (Var `{{arg}}))))
