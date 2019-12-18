@@ -129,4 +129,4 @@ data N : Type where
 
 add : N -> N -> N
 add  Z'      n = n
-add (S' n1) n2 = n2
+add (S' n1) n2 = S' (add n1 n2)
