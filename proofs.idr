@@ -127,6 +127,6 @@ data N : Type where
   Z' : N
   S' : N -> N
 
-add : (N , N) -> N
-add (Z'   , n ) = n
-add (S' n1, n2) = n2
+add : N -> N -> N
+add  Z'      n = n
+add (S' n1) n2 = n2
