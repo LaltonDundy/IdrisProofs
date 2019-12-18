@@ -2,7 +2,7 @@
 ExampleProofs using Idris’s Elaborator and Pruviloj
 
 This started as personal practice to learn about Idris' proof and Elaboration magic.
-However, since there is not much on the internet for these demonstrations I thought it would be best to make it public to people would have something to see.
+However, since there is not much on the internet for these demonstrations I thought it would be best to make it public so people would have something to see and learn from.
 
 Future examples will be added when they are added.
 
