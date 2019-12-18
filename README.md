@@ -12,4 +12,6 @@ Anyone is invited to add and contribute.
 Education for many of Idris' ideas and features
 
 ## What this is not
-Code Golf and Hacks
+Code Golf and Hacks. Some code may read very redundant, it probably is suppose to be that way.
+
+### Remember to compile with -p pruviloj
