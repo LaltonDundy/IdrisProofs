@@ -123,10 +123,46 @@ comp = %runElab (do
                 repeatUntilFail intro'
                 exact (RApp (Var `{{g}}) (RApp (Var `{{f}}) (Var `{{arg}}))))
 
+
+-- Algebraic Properties --------------------------
+interface Closed (A : Type) where
+  f : A -> A -> A
+
+interface (Closed A) => Associative A where
+  assoc_prf : (a, b, c : A) -> (f a (f b c) = f (f a b) c)
+
+interface (Closed A) => Commutative A where
+  commut_prf : (a, b : A) -> (f a b = f b a)
+
+interface (Associative A) => Monoid' A where
+  idElm      : A
+  monoid_prf : (a : A) -> (f idElm a = a)
+
+interface (Monoid' A) => Group A where
+  group_prf : (a : A) -> (b : A ** (f a b = Proofs.idElm))
+
+interface (Group A , Commutative A) => Abelian A where
+ ----------------------------------------------------------
+
+-- Natural Numbers
 data N : Type where
   Z' : N
   S' : N -> N
 
+-- Addition for natural numbers
 add : N -> N -> N
 add  Z'      n = n
 add (S' n1) n2 = S' (add n1 n2)
+
+implementation Closed N where
+  f = add
+
+implementation Associative N where
+  assoc_prf = ?assoc
+
+implementation Monoid' N where
+  idElm = Z'
+  monoid_prf = ?monoid
+
+implementation Commutative N where
+  commut_prf = ?commut
