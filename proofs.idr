@@ -158,11 +158,23 @@ implementation Closed N where
   f = add
 
 implementation Associative N where
-  assoc_prf = ?assoc
+  assoc_prf = %runElab 
+                        (do repeatUntilFail intro'
+                            induction (Var `{{a}})
+                            compute
+                            search
+                            compute
+                            attack
+                            intro `{{x}}
+                            intro `{{hy}}
+                            rewriteWith (Var `{{hy}})
+                            search
+                            solve)
 
 implementation Monoid' N where
   idElm = Z'
-  monoid_prf = ?monoid
+  monoid_prf = %runElab (do intros
+                            search)
 
 implementation Commutative N where
   commut_prf = ?commut
