@@ -14,4 +14,7 @@ Education for many of Idris' ideas and features
 ## What this is not
 Code Golf and Hacks. Some code may read very redundant, it probably is suppose to be that way.
 
+## Additional Notes about Code
+- Most properties will be represented using Idris interfaces (in the same manner as mathematical classes), these are provided in the separate file properties.idr. This allows for easier organization and semantics.
+
 ### Remember to compile with -p pruviloj
