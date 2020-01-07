@@ -5,9 +5,11 @@ import Language.Reflection.Elab
 import Pruviloj
 import Pruviloj.Induction
 
+-- properties.idr
+import properties
+
 %default total
 %language ElabReflection
-
 
 -- Function application AKA Modens Ponens
 modens : (a, b : Type)     -> 
@@ -89,10 +91,10 @@ iso a b f g = (proofA : a)   -> -- forall instances of 'a'
 -- Distrabution (a, b | c) <~~> ((a , b) | (a , c))
 -- ||| Couln't figure out how to do this using the Elaborator yet
 dist : (a, b, c : Type) -> 
-       (f : (Pair a (Either b c) -> (Either (Pair a b) (Pair a c))) **            -- There exists f such that ...
-              ( g : ((Either (Pair a b) (Pair a c)) -> (Pair a (Either b c))) **  -- there exists g such that ...
-                    iso (Pair a (Either b c)) (Either (Pair a b) (Pair a c)) f g  -- (a, b | c) isomorphic to (a , b) | (a , c)
-              ))
+       (DPair (Pair a (Either b c) -> (Either (Pair a b) (Pair a c))) (\f =>          -- there exists f such that ...
+              (DPair ((Either (Pair a b) (Pair a c)) -> (Pair a (Either b c))) (\g => -- there exists g such that ...
+                    iso (Pair a (Either b c)) (Either (Pair a b) (Pair a c)) f g      -- (a, b | c) isomorphic to (a , b) | (a , c)
+              )))) 
 dist a b c = MkDPair f' . -- proof of f
              MkDPair g' $ -- proof of g
               (\arg1 =>   -- Given Every (a , b | c)
@@ -124,26 +126,6 @@ comp = %runElab (do
                 exact (RApp (Var `{{g}}) (RApp (Var `{{f}}) (Var `{{arg}}))))
 
 
--- Algebraic Properties --------------------------
-interface Closed (A : Type) where
-  f : A -> A -> A
-
-interface (Closed A) => Associative A where
-  assoc_prf : (a, b, c : A) -> (f a (f b c) = f (f a b) c)
-
-interface (Closed A) => Commutative A where
-  commut_prf : (a, b : A) -> (f a b = f b a)
-
-interface (Associative A) => Monoid' A where
-  idElm      : A
-  monoid_prf : (a : A) -> (f idElm a = a)
-
-interface (Monoid' A) => Group A where
-  group_prf : (a : A) -> (b : A ** (f a b = Proofs.idElm))
-
-interface (Group A , Commutative A) => Abelian A where
- ----------------------------------------------------------
-
 -- Natural Numbers
 data N : Type where
   Z' : N
@@ -158,8 +140,7 @@ implementation Closed N where
   f = add
 
 implementation Associative N where
-  assoc_prf = %runElab 
-                        (do repeatUntilFail intro'
+  assoc_prf = %runElab  (do repeatUntilFail intro'
                             induction (Var `{{a}})
                             compute
                             search
@@ -177,4 +158,50 @@ implementation Monoid' N where
                             search)
 
 implementation Commutative N where
-  commut_prf = ?commut
+  commut_prf Z'     b = ?commut1
+  commut_prf (S' a) b = ?commut2
+
+-- Commutative Base Case
+Proofs.commut1 = %runElab (do intro'
+                              induction $ Var `{{b}}
+                              compute
+                              reflexivity
+                              compute
+                              attack
+                              x  <- gensym "x"
+                              hy <- gensym "hy"
+                              intro x
+                              intro hy
+                              rewriteWith $ Var hy
+                              reflexivity
+                              solve)
+
+-- Commutative Induction Step
+Proofs.commut2 = %runElab (do intro'
+                              intro'
+                              induction $ Var `{{b}}
+                              compute
+                              let com1 = RApp (Var `{commut1}) (Var `{{a}})
+                              attack
+                              rewriteWith com1
+                              reflexivity
+                              solve
+                              compute
+                              attack
+                              intro `{{x}}
+                              intro `{{hy}}
+                              rewriteWith $ Var `{{hy}}
+                              attack
+                              hyRev <- symmetryAs (Var `{{hy}}) "hyRev"
+                              induction $ Var `{{a}}
+                              compute
+                              reflexivity
+                              compute
+                              attack
+                              intro `{{x1}}
+                              intro `{{hy1}}
+                              rewriteWith $ Var `{{hy1}}
+                              reflexivity
+                              solve
+                              solve
+                              solve)
