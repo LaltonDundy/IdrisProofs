@@ -125,7 +125,6 @@ comp = %runElab (do
                 repeatUntilFail intro'
                 exact (RApp (Var `{{g}}) (RApp (Var `{{f}}) (Var `{{arg}}))))
 
-
 -- Natural Numbers
 data N : Type where
   Z' : N
